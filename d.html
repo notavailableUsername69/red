@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple Drawing App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <style>
+    #canvas {
+      border: 1px solid #000;
+      touch-action: none; /* Disable touch gestures on the canvas */
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <script>
+    window.onload = function() {
+      var canvas = document.getElementById('canvas');
+      var context = canvas.getContext('2d');
+
+      // Set canvas size to fill the screen
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      // Variables to store previous and current touch coordinates
+      var previousX, previousY, currentX, currentY;
+
+      // Variable to track if the user is currently drawing
+      var isDrawing = false;
+
+      // Function to start drawing
+      function startDrawing(x, y) {
+        isDrawing = true;
+        previousX = x;
+        previousY = y;
+      }
+
+      // Function to draw a line
+      function drawLine(x1, y1, x2, y2) {
+        context.beginPath();
+        context.strokeStyle = '#000'; // Set line color to black
+        context.lineWidth = 2; // Set line width to 2 pixels
+        context.moveTo(x1, y1);
+        context.lineTo(x2, y2);
+        context.stroke();
+        context.closePath();
+      }
+
+      // Event listener for touchstart event
+      canvas.addEventListener('touchstart', function(event) {
+        event.preventDefault();
+        var touch = event.touches[0];
+        var x = touch.clientX;
+        var y = touch.clientY;
+        startDrawing(x, y);
+      });
+
+      // Event listener for touchmove event
+      canvas.addEventListener('touchmove', function(event) {
+        event.preventDefault();
+        if (isDrawing) {
+          var touch = event.touches[0];
+          var x = touch.clientX;
+          var y = touch.clientY;
+          drawLine(previousX, previousY, x, y);
+          previousX = x;
+          previousY = y;
+        }
+      });
+
+      // Event listener for touchend event
+      canvas.addEventListener('touchend', function(event) {
+        event.preventDefault();
+        isDrawing = false;
+      });
+
+      // Event listener for touchcancel event
+      canvas.addEventListener('touchcancel', function(event) {
+        event.preventDefault();
+        isDrawing = false;
+      });
+    };
+  </script>
+</body>
+</html>
